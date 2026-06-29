@@ -41,3 +41,17 @@ yarn-error.log*
 next-env.d.ts
 # Added by code-review-graph
 .code-review-graph/
+
+# AI Editors & Agents
+.claude/
+.cursor/
+.gemini/
+.kiro/
+.qoder/
+.vscode/
+.mcp.json
+.opencode.json
+.cursorrules
+.windsurfrules
+*.md
+!README.md
