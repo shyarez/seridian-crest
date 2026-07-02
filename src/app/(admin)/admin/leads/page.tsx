@@ -1,16 +1,24 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = { title: 'Leads | Admin' };
 
 async function getLeads(status?: string) {
   const headersList = await headers();
   const host = headersList.get('host') ?? 'localhost:3000';
+  const cookie = headersList.get('cookie') ?? '';
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
   const url = new URL(`${protocol}://${host}/api/leads`);
   if (status) url.searchParams.set('status', status);
-  const res = await fetch(url.toString(), { cache: 'no-store' });
+
+  const res = await fetch(url.toString(), {
+    cache: 'no-store',
+    headers: { cookie },
+  });
+
+  if (res.status === 401) return null;
   if (!res.ok) return [];
   return res.json();
 }
@@ -19,6 +27,8 @@ export default async function AdminLeadsPage(props: { searchParams: Promise<{ st
   const searchParams = await props.searchParams;
   const statusFilter = searchParams.status;
   const leads = await getLeads(statusFilter);
+
+  if (leads === null) redirect('/admin/login');
 
   const STATUS_COLORS: Record<string, string> = {
     new: 'bg-orange-100 text-orange-700',
