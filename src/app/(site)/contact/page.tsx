@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import AnimatedSection from '@/components/site/AnimatedSection';
 import ContactForm from '@/components/site/ContactForm';
 import { MapPin, Phone, Mail } from 'lucide-react';
-import { getGlobalContent } from '@/lib/actions/content.actions';
+import { getGlobalContent } from '@/lib/data/content';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
