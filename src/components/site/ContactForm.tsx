@@ -1,12 +1,9 @@
 'use client';
 
-import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
-import { submitLead } from '@/lib/actions/lead.actions';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { ActionResult } from '@/types';
 import { Loader2, SendHorizonal, CheckCircle2 } from 'lucide-react';
 
 const SERVICES = [
@@ -16,57 +13,70 @@ const SERVICES = [
   'Customs Clearance & Compliance',
 ];
 
-const initialState: ActionResult = { success: false };
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={pending}
-      id="contact-submit"
-      className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-brand-primary text-white font-bold text-sm hover:bg-brand-secondary disabled:opacity-60 transition-all shadow-xl hover:-translate-y-0.5"
-    >
-      {pending ? (
-        <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
-      ) : (
-        <><SendHorizonal className="w-4 h-4" /> Submit Enquiry</>
-      )}
-    </button>
-  );
-}
-
 export default function ContactForm() {
-  const [state, formAction] = useActionState(submitLead, initialState);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
 
-  if (state.success) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSubmitting(true);
+    setErrors({});
+
+    const form = e.currentTarget;
+    const data = {
+      name: (form.elements.namedItem('name') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      company: (form.elements.namedItem('company') as HTMLInputElement).value || undefined,
+      phone: (form.elements.namedItem('phone') as HTMLInputElement).value || undefined,
+      service: (form.elements.namedItem('service') as HTMLSelectElement).value || undefined,
+      message: (form.elements.namedItem('message') as HTMLTextAreaElement).value,
+    };
+
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    setSubmitting(false);
+
+    if (res.ok) {
+      setSuccess(true);
+      setSuccessMessage('Your enquiry has been received. We will be in touch shortly.');
+    } else {
+      const body = await res.json();
+      if (body.errors) {
+        setErrors(body.errors);
+      }
+    }
+  }
+
+  if (success) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center gap-4 bg-brand-bg rounded-2xl border border-brand-border">
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-2 shadow-sm">
           <CheckCircle2 className="w-8 h-8 text-green-600" />
         </div>
         <h3 className="text-2xl font-extrabold text-brand-primary">Enquiry Received</h3>
-        <p className="text-brand-text-secondary text-lg max-w-sm">{state.message}</p>
+        <p className="text-brand-text-secondary text-lg max-w-sm">{successMessage}</p>
       </div>
     );
   }
 
   return (
-    <form action={formAction} className="space-y-6" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="space-y-2">
           <Label htmlFor="name" className="text-brand-text-primary font-bold">Full Name <span className="text-red-500">*</span></Label>
           <Input id="name" name="name" placeholder="John Smith" required className="text-base h-12" />
-          {state.errors?.name && (
-            <p className="text-red-500 text-xs">{state.errors.name[0]}</p>
-          )}
+          {errors.name && <p className="text-red-500 text-xs">{errors.name[0]}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="email" className="text-brand-text-primary font-bold">Email Address <span className="text-red-500">*</span></Label>
           <Input id="email" name="email" type="email" placeholder="john@company.com" required className="text-base h-12" />
-          {state.errors?.email && (
-            <p className="text-red-500 text-xs">{state.errors.email[0]}</p>
-          )}
+          {errors.email && <p className="text-red-500 text-xs">{errors.email[0]}</p>}
         </div>
       </div>
 
@@ -105,13 +115,22 @@ export default function ContactForm() {
           required
           className="text-base resize-none"
         />
-        {state.errors?.message && (
-          <p className="text-red-500 text-xs">{state.errors.message[0]}</p>
-        )}
+        {errors.message && <p className="text-red-500 text-xs">{errors.message[0]}</p>}
       </div>
 
       <div className="pt-4">
-        <SubmitButton />
+        <button
+          type="submit"
+          disabled={submitting}
+          id="contact-submit"
+          className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-brand-primary text-white font-bold text-sm hover:bg-brand-secondary disabled:opacity-60 transition-all shadow-xl hover:-translate-y-0.5"
+        >
+          {submitting ? (
+            <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
+          ) : (
+            <><SendHorizonal className="w-4 h-4" /> Submit Enquiry</>
+          )}
+        </button>
       </div>
     </form>
   );
