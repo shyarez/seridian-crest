@@ -1,17 +1,25 @@
 import { Metadata } from 'next';
-import { connectDB } from '@/lib/db/mongoose';
-import Lead from '@/lib/db/models/Lead';
 import Link from 'next/link';
-import { ArrowLeft, Trash2, Mail, Phone, Building, Briefcase, Calendar } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Building, Briefcase, Calendar } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { deleteLead, updateLead } from '@/lib/actions/lead.actions';
+import { headers } from 'next/headers';
+import LeadActions from './LeadActions';
 
 export const metadata: Metadata = { title: 'Lead Details | Admin' };
 
+async function getLead(id: string) {
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const res = await fetch(`${protocol}://${host}/api/leads/${id}`, { cache: 'no-store' });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('Failed to load lead');
+  return res.json();
+}
+
 export default async function LeadDetailsPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  await connectDB();
-  const lead = await Lead.findById(params.id).lean();
+  const lead = await getLead(params.id);
 
   if (!lead) notFound();
 
@@ -20,10 +28,6 @@ export default async function LeadDetailsPage(props: { params: Promise<{ id: str
     reviewed: 'text-brand-primary bg-brand-bg border border-brand-border',
     closed: 'text-green-700 bg-green-100',
   };
-
-  const deleteAction = deleteLead.bind(null, params.id);
-  const markReviewed = updateLead.bind(null, params.id, { status: 'reviewed' });
-  const markClosed = updateLead.bind(null, params.id, { status: 'closed' });
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -81,36 +85,8 @@ export default async function LeadDetailsPage(props: { params: Promise<{ id: str
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row justify-between gap-4 p-6 bg-white rounded-3xl border border-brand-border shadow-sm">
-        <div className="flex gap-4">
-          {lead.status !== 'reviewed' && (
-            <form action={markReviewed}>
-              <button className="px-6 py-2.5 rounded-xl bg-brand-primary text-white font-bold text-sm hover:bg-brand-secondary transition-colors shadow-md">
-                Mark as Reviewed
-              </button>
-            </form>
-          )}
-          {lead.status !== 'closed' && (
-            <form action={markClosed}>
-              <button className="px-6 py-2.5 rounded-xl border border-brand-border text-brand-primary font-bold text-sm hover:bg-brand-bg transition-colors">
-                Mark as Closed
-              </button>
-            </form>
-          )}
-        </div>
-        <form action={deleteAction}>
-          <button
-            type="submit"
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-red-200 bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition-colors"
-            onClick={(e) => {
-              if (!confirm('Delete this lead permanently?')) e.preventDefault();
-            }}
-          >
-            <Trash2 className="w-4 h-4" /> Delete
-          </button>
-        </form>
-      </div>
+      {/* Client component for interactive actions */}
+      <LeadActions leadId={lead._id} currentStatus={lead.status} />
     </div>
   );
 }
