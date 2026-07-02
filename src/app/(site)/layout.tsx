@@ -1,7 +1,7 @@
 import Navbar from '@/components/site/Navbar';
 import Footer from '@/components/site/Footer';
 import { Toaster } from '@/components/ui/sonner';
-import { getGlobalContent } from '@/lib/actions/content.actions';
+import { getGlobalContent } from '@/lib/data/content';
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const content = await getGlobalContent();
