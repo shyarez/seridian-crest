@@ -2,30 +2,33 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Mail, Phone, Building, Briefcase, Calendar } from 'lucide-react';
 import { notFound, redirect } from 'next/navigation';
-import { requireSession } from '@/lib/auth';
-import { connectDB } from '@/lib/db/mongoose';
-import Lead from '@/lib/db/models/Lead';
+import { headers } from 'next/headers';
 import LeadActions from './LeadActions';
 
 export const metadata: Metadata = { title: 'Lead Details | Admin' };
 
 async function getLead(id: string) {
-  try {
-    await requireSession();
-  } catch {
-    redirect('/admin/login');
-  }
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const cookie = headersList.get('cookie') ?? '';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
-  await connectDB();
-  const lead = await Lead.findById(id).lean();
-  if (!lead) return null;
-  return JSON.parse(JSON.stringify(lead));
+  const res = await fetch(`${protocol}://${host}/api/leads/${id}`, {
+    cache: 'no-store',
+    headers: { cookie },
+  });
+
+  if (res.status === 404) return null;
+  if (res.status === 401) return 'unauthorized';
+  if (!res.ok) throw new Error('Failed to load lead');
+  return res.json();
 }
 
 export default async function LeadDetailsPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const lead = await getLead(params.id);
 
+  if (lead === 'unauthorized') redirect('/admin/login');
   if (!lead) notFound();
 
   const STATUS_COLORS: Record<string, string> = {
