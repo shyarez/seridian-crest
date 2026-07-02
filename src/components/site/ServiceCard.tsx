@@ -34,9 +34,9 @@ export default function ServiceCard({ service }: ServiceCardProps) {
       </p>
 
       {/* Features */}
-      {service.features?.length > 0 && (
+      {(service.features?.length ?? 0) > 0 && (
         <ul className="space-y-2 mb-6">
-          {service.features.slice(0, 3).map((f) => (
+          {service.features!.slice(0, 3).map((f) => (
             <li key={f} className="flex items-center gap-2 text-sm text-navy-700">
               <CheckCircle2 className="w-4 h-4 text-gold-500 shrink-0" />
               {f}
