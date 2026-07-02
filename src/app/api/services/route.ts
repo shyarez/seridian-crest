@@ -4,10 +4,22 @@ import Service from '@/lib/db/models/Service';
 import { requireSession } from '@/lib/auth';
 import { ServiceSchema } from '@/lib/validations';
 
-// GET /api/services — Public: all active services
-export async function GET() {
+// GET /api/services — Public: active services; ?all=true (admin): all services
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const showAll = searchParams.get('all') === 'true';
+
+  if (showAll) {
+    try {
+      await requireSession();
+    } catch {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+  }
+
   await connectDB();
-  const services = await Service.find({ isActive: true }).sort({ order: 1 }).lean();
+  const filter = showAll ? {} : { isActive: true };
+  const services = await Service.find(filter).sort({ order: 1 }).lean();
   return NextResponse.json(services);
 }
 
