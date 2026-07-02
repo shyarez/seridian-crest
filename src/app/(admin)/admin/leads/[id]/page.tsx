@@ -1,20 +1,25 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Mail, Phone, Building, Briefcase, Calendar } from 'lucide-react';
-import { notFound } from 'next/navigation';
-import { headers } from 'next/headers';
+import { notFound, redirect } from 'next/navigation';
+import { requireSession } from '@/lib/auth';
+import { connectDB } from '@/lib/db/mongoose';
+import Lead from '@/lib/db/models/Lead';
 import LeadActions from './LeadActions';
 
 export const metadata: Metadata = { title: 'Lead Details | Admin' };
 
 async function getLead(id: string) {
-  const headersList = await headers();
-  const host = headersList.get('host') ?? 'localhost:3000';
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const res = await fetch(`${protocol}://${host}/api/leads/${id}`, { cache: 'no-store' });
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error('Failed to load lead');
-  return res.json();
+  try {
+    await requireSession();
+  } catch {
+    redirect('/admin/login');
+  }
+
+  await connectDB();
+  const lead = await Lead.findById(id).lean();
+  if (!lead) return null;
+  return JSON.parse(JSON.stringify(lead));
 }
 
 export default async function LeadDetailsPage(props: { params: Promise<{ id: string }> }) {
