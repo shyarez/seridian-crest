@@ -1,4 +1,4 @@
-import { getGlobalContent } from '@/lib/actions/content.actions';
+import { getGlobalContent } from '@/lib/data/content';
 import ContentEditor from '@/components/admin/ContentEditor';
 import { Metadata } from 'next';
 
