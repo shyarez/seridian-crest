@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   await connectDB();
   const { searchParams } = new URL(request.url);
   const status = searchParams.get('status');
-  const filter = status && status !== 'all' ? { status } : {};
+  const filter = status && status !== 'all' ? { status: status as 'new' | 'reviewed' | 'closed' } : {};
   const leads = await Lead.find(filter).sort({ submittedAt: -1 }).lean();
   return NextResponse.json(leads);
 }
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     const ip = request.headers.get('x-forwarded-for') ?? 'unknown';
-    const lead = await Lead.create({ ...parsed.data, ipAddress: ip, submittedAt: new Date() });
+    const lead = await Lead.create({ ...parsed.data, submittedAt: new Date() });
     return NextResponse.json(lead, { status: 201 });
   } catch (err) {
     console.error('[POST /api/leads]', err);
