@@ -1,17 +1,23 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { Plus, Edit2, CheckCircle2, XCircle } from 'lucide-react';
-import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { requireSession } from '@/lib/auth';
+import { connectDB } from '@/lib/db/mongoose';
+import Service from '@/lib/db/models/Service';
 
 export const metadata: Metadata = { title: 'Services | Admin' };
 
 async function getServices() {
-  const headersList = await headers();
-  const host = headersList.get('host') ?? 'localhost:3000';
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const res = await fetch(`${protocol}://${host}/api/services?all=true`, { cache: 'no-store' });
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    await requireSession();
+  } catch {
+    redirect('/admin/login');
+  }
+
+  await connectDB();
+  const services = await Service.find({}).sort({ order: 1 }).lean();
+  return JSON.parse(JSON.stringify(services));
 }
 
 export default async function AdminServicesPage() {
