@@ -1,17 +1,35 @@
 import type { Metadata } from 'next';
 import { Inbox, Layers, FileText, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
-import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { requireSession } from '@/lib/auth';
+import { connectDB } from '@/lib/db/mongoose';
+import Lead from '@/lib/db/models/Lead';
+import Service from '@/lib/db/models/Service';
 
 export const metadata: Metadata = { title: 'Dashboard | Admin' };
 
 async function getDashboardData() {
-  const headersList = await headers();
-  const host = headersList.get('host') ?? 'localhost:3000';
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const res = await fetch(`${protocol}://${host}/api/dashboard`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to load dashboard');
-  return res.json();
+  try {
+    await requireSession();
+  } catch {
+    redirect('/admin/login');
+  }
+
+  await connectDB();
+
+  const [totalLeads, newLeads, totalServices, activeServices, recentLeads] = await Promise.all([
+    Lead.countDocuments(),
+    Lead.countDocuments({ status: 'new' }),
+    Service.countDocuments(),
+    Service.countDocuments({ isActive: true }),
+    Lead.find().sort({ submittedAt: -1 }).limit(5).lean(),
+  ]);
+
+  return {
+    stats: { totalLeads, newLeads, totalServices, activeServices },
+    recentLeads: JSON.parse(JSON.stringify(recentLeads)),
+  };
 }
 
 export default async function DashboardPage() {
