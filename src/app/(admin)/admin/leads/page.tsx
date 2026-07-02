@@ -1,15 +1,18 @@
 import { Metadata } from 'next';
-import { connectDB } from '@/lib/db/mongoose';
-import Lead from '@/lib/db/models/Lead';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = { title: 'Leads | Admin' };
 
 async function getLeads(status?: string) {
-  await connectDB();
-  const query = status ? { status } : {};
-  const leads = await Lead.find(query).sort({ submittedAt: -1 }).lean();
-  return JSON.parse(JSON.stringify(leads));
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const url = new URL(`${protocol}://${host}/api/leads`);
+  if (status) url.searchParams.set('status', status);
+  const res = await fetch(url.toString(), { cache: 'no-store' });
+  if (!res.ok) return [];
+  return res.json();
 }
 
 export default async function AdminLeadsPage(props: { searchParams: Promise<{ status?: string }> }) {
