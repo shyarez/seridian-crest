@@ -1,25 +1,29 @@
 import { Metadata } from 'next';
-import { connectDB } from '@/lib/db/mongoose';
-import Service from '@/lib/db/models/Service';
 import ServiceForm from '@/components/admin/ServiceForm';
 import Link from 'next/link';
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { deleteService } from '@/lib/actions/service.actions';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = { title: 'Edit Service | Admin' };
 
+async function getService(id: string) {
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const res = await fetch(`${protocol}://${host}/api/services/${id}`, { cache: 'no-store' });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('Failed to load service');
+  return res.json();
+}
+
 export default async function EditServicePage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  await connectDB();
-  const service = await Service.findById(params.id).lean();
+  const service = await getService(params.id);
 
   if (!service) {
     notFound();
   }
-
-  // Server action binding for delete
-  const deleteAction = deleteService.bind(null, params.id);
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -30,22 +34,8 @@ export default async function EditServicePage(props: { params: Promise<{ id: str
           </Link>
           <h1 className="text-3xl font-extrabold text-brand-primary">Edit Service</h1>
         </div>
-        <form action={deleteAction}>
-          <button
-            type="submit"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-red-200 bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition-colors"
-            onClick={(e) => {
-              if (!confirm('Are you sure you want to delete this service? This cannot be undone.')) {
-                e.preventDefault();
-              }
-            }}
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete Service
-          </button>
-        </form>
       </div>
-      <ServiceForm initialData={JSON.parse(JSON.stringify(service))} />
+      <ServiceForm initialData={service} />
     </div>
   );
 }
