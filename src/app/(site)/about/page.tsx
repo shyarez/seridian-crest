@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import AnimatedSection from '@/components/site/AnimatedSection';
 import { Target, Eye, Shield, Clock, Search, HeartHandshake, CheckCircle } from 'lucide-react';
-import { getGlobalContent } from '@/lib/actions/content.actions';
+import { getGlobalContent } from '@/lib/data/content';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
