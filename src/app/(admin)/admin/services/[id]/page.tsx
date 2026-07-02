@@ -2,19 +2,24 @@ import { Metadata } from 'next';
 import ServiceForm from '@/components/admin/ServiceForm';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { notFound } from 'next/navigation';
-import { headers } from 'next/headers';
+import { notFound, redirect } from 'next/navigation';
+import { requireSession } from '@/lib/auth';
+import { connectDB } from '@/lib/db/mongoose';
+import Service from '@/lib/db/models/Service';
 
 export const metadata: Metadata = { title: 'Edit Service | Admin' };
 
 async function getService(id: string) {
-  const headersList = await headers();
-  const host = headersList.get('host') ?? 'localhost:3000';
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const res = await fetch(`${protocol}://${host}/api/services/${id}`, { cache: 'no-store' });
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error('Failed to load service');
-  return res.json();
+  try {
+    await requireSession();
+  } catch {
+    redirect('/admin/login');
+  }
+
+  await connectDB();
+  const service = await Service.findById(id).lean();
+  if (!service) return null;
+  return JSON.parse(JSON.stringify(service));
 }
 
 export default async function EditServicePage(props: { params: Promise<{ id: string }> }) {
