@@ -1,31 +1,21 @@
 import type { Metadata } from 'next';
-import { connectDB } from '@/lib/db/mongoose';
-import Lead from '@/lib/db/models/Lead';
-import Service from '@/lib/db/models/Service';
 import { Inbox, Layers, FileText, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = { title: 'Dashboard | Admin' };
 
-async function getStats() {
-  await connectDB();
-  const [totalLeads, newLeads, totalServices, activeServices] = await Promise.all([
-    Lead.countDocuments(),
-    Lead.countDocuments({ status: 'new' }),
-    Service.countDocuments(),
-    Service.countDocuments({ isActive: true }),
-  ]);
-  return { totalLeads, newLeads, totalServices, activeServices };
-}
-
-async function getRecentLeads() {
-  await connectDB();
-  const leads = await Lead.find().sort({ submittedAt: -1 }).limit(5).lean();
-  return JSON.parse(JSON.stringify(leads));
+async function getDashboardData() {
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const res = await fetch(`${protocol}://${host}/api/dashboard`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to load dashboard');
+  return res.json();
 }
 
 export default async function DashboardPage() {
-  const [stats, recentLeads] = await Promise.all([getStats(), getRecentLeads()]);
+  const { stats, recentLeads } = await getDashboardData();
 
   const STAT_CARDS = [
     { icon: Inbox, label: 'Total Leads', value: stats.totalLeads, sub: `${stats.newLeads} new`, href: '/admin/leads', color: 'text-brand-accent bg-brand-accent/10' },
