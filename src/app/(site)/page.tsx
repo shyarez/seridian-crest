@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import { connectDB } from '@/lib/db/mongoose';
-import Service from '@/lib/db/models/Service';
 import { IService } from '@/types';
 import HeroSection from '@/components/site/HeroSection';
 import AnimatedSection from '@/components/site/AnimatedSection';
 import Link from 'next/link';
 import { ArrowRight, Globe, ShieldCheck, Clock, Users, Building, Factory, Package, Wrench, CheckCircle2, Ship, Anchor } from 'lucide-react';
-import { getGlobalContent } from '@/lib/actions/content.actions';
+import { getGlobalContent } from '@/lib/data/content';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -14,17 +13,21 @@ export const metadata: Metadata = {
 };
 
 async function getServices(): Promise<IService[]> {
-  if (!process.env.MONGODB_URI) {
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  try {
+    const res = await fetch(`${protocol}://${host}/api/services`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('API error');
+    return res.json();
+  } catch {
     return [
       { _id: '1', title: 'Liner Agency & Husbandry', description: 'Full vessel representation, crew support, documentation coordination, and operational assistance for smooth port calls.', icon: 'Ship' },
       { _id: '2', title: 'Freight Forwarding & Cargo Management', description: 'Reliable transportation solutions across sea, air, and land with complete shipment coordination.', icon: 'Package' },
-      { _id: '3', title: 'Project & Breakbulk Cargo', description: 'Specialized logistics planning for oversized, heavy-lift, and complex cargo operations.', icon: 'Anchor' }, // Fallback icon
+      { _id: '3', title: 'Project & Breakbulk Cargo', description: 'Specialized logistics planning for oversized, heavy-lift, and complex cargo operations.', icon: 'Anchor' },
       { _id: '4', title: 'Customs Clearance & Compliance', description: 'Accurate documentation and regulatory support for seamless import and export operations.', icon: 'ShieldCheck' }
     ];
   }
-  await connectDB();
-  const services = await Service.find({ isActive: true }).sort({ order: 1 }).lean();
-  return JSON.parse(JSON.stringify(services));
 }
 
 const TRUST_CARDS = [
