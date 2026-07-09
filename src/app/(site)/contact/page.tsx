@@ -6,7 +6,7 @@ import { getGlobalContent } from '@/lib/data/content';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: 'Get in touch with Seridian Crest LLP for freight forwarding quotes and logistics enquiries.',
+  description: 'Get in touch with Seridian Crest LLP for export service quotes and freight forwarding enquiries.',
 };
 
 export default async function ContactPage() {
@@ -29,7 +29,7 @@ export default async function ContactPage() {
               Contact Us
             </h1>
             <p className="text-white/80 text-xl font-medium">
-              Our maritime experts are ready to assist with your global logistics needs.
+              Our team is ready to assist with your export service and freight forwarding needs.
             </p>
           </AnimatedSection>
         </div>
@@ -45,7 +45,7 @@ export default async function ContactPage() {
                 <div>
                   <h2 className="text-3xl font-extrabold text-brand-primary mb-4">Get In Touch</h2>
                   <p className="text-brand-text-secondary text-lg">
-                    Whether you have a specific shipment in mind or are exploring logistics options, our team is here to help.
+                    Whether you have a specific shipment in mind or are exploring our export services, our team is here to help.
                   </p>
                 </div>
 

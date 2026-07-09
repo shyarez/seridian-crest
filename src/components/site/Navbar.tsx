@@ -56,7 +56,7 @@ export default function Navbar() {
     </span>
 
     <span className="text-sm md:text-base text-brand-text-secondary mt-1">
-      Global Maritime Logistics
+      Global Export Services
     </span>
   </div>
 </Link>

@@ -38,7 +38,7 @@ export default function Footer({ phone, email, address }: FooterProps) {
               </div>
             </Link>
             <p className="text-brand-bg/70 text-sm leading-relaxed mb-6">
-              Global maritime logistics and freight solutions, connecting your cargo to every port worldwide with unparalleled reliability.
+              Focused primarily on export services, connecting your cargo to ports worldwide with dependable freight forwarding and full customs compliance.
             </p>
           </div>
 

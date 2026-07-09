@@ -3,7 +3,7 @@ import { IService } from '@/types';
 import HeroSection from '@/components/site/HeroSection';
 import AnimatedSection from '@/components/site/AnimatedSection';
 import Link from 'next/link';
-import { ArrowRight, Globe, ShieldCheck, Clock, Users, Building, Factory, Package, Wrench, CheckCircle2, Ship, Anchor } from 'lucide-react';
+import { ArrowRight, Globe, ShieldCheck, Clock, Users, Building, Package, CheckCircle2, Ship, Anchor } from 'lucide-react';
 import { getGlobalContent } from '@/lib/data/content';
 import { headers } from 'next/headers';
 
@@ -33,7 +33,7 @@ async function getServices(): Promise<IService[]> {
 const TRUST_CARDS = [
   { icon: Globe, title: 'Global Network', body: 'Extensive connections across all major trade lanes.' },
   { icon: CheckCircle2, title: 'Operational Excellence', body: 'Precision in every shipment, every time.' },
-  { icon: ShieldCheck, title: 'Regulatory Compliance', body: 'Strict adherence to international maritime laws.' },
+  { icon: ShieldCheck, title: 'Regulatory Compliance', body: 'Strict adherence to international trade regulations.' },
   { icon: Users, title: 'Reliable Support', body: '24/7 dedicated support for our partners.' },
 ];
 
@@ -47,12 +47,8 @@ const WHY_CHOOSE_US = [
 ];
 
 const INDUSTRIES = [
-  { name: 'Manufacturing', icon: Factory },
-  { name: 'Construction', icon: Building },
-  { name: 'Engineering', icon: Wrench },
-  { name: 'Energy', icon: Globe }, // Reusing globe as a generic for energy
   { name: 'Import & Export', icon: Package },
-  { name: 'Maritime Operations', icon: Anchor },
+  { name: 'Export Operations', icon: Anchor },
 ];
 
 export default async function HomePage() {
@@ -136,7 +132,7 @@ export default async function HomePage() {
                 Services Overview
               </h2>
               <p className="text-brand-text-secondary text-lg">
-                Comprehensive maritime logistics solutions tailored for global trade.
+                Comprehensive export services tailored for global trade.
               </p>
             </div>
           </AnimatedSection>
@@ -253,7 +249,7 @@ export default async function HomePage() {
         <div className="container-site text-center">
           <AnimatedSection direction="up">
             <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
-              Need a Reliable Logistics Partner?
+              Ready to Work With Us?
             </h2>
             <p className="text-brand-highlight text-lg md:text-xl mb-10 max-w-2xl mx-auto font-medium">
               {content.ctaText}

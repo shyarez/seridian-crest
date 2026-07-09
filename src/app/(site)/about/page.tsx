@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Learn about Seridian Crest LLP — our mission, vision, and core values in maritime logistics.',
+  description: 'Learn about Seridian Crest LLP, our mission, vision, and core values as an export-focused shipping and logistics company.',
 };
 
 const CORE_VALUES = [
@@ -32,7 +32,7 @@ export default async function AboutPage() {
               About Seridian Crest
             </h1>
             <p className="text-white/80 text-xl font-medium">
-              Simplifying global trade through dependable logistics coordination and operational excellence.
+              Driven by a primary focus on export services, delivering reliable shipping solutions from port to destination.
             </p>
           </AnimatedSection>
         </div>

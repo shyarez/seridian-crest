@@ -20,10 +20,10 @@ export default function ServicesGrid({ services, teaser = false }: ServicesGridP
               What We Do
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-navy-950 mb-4">
-              Comprehensive Maritime Solutions
+              Comprehensive Export Solutions
             </h2>
             <p className="text-navy-600/70 text-base">
-              From freight forwarding to port operations, we cover every stage of your maritime supply chain.
+              From freight forwarding to port operations, we cover every stage of your global supply chain.
             </p>
           </div>
         </AnimatedSection>

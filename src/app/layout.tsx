@@ -11,12 +11,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://seridian-crest.com'),
   title: {
-    default: 'Seridian Crest LLP — Maritime Logistics & Shipping Solutions',
+    default: 'Seridian Crest LLP | Export Services and Freight Forwarding',
     template: '%s | Seridian Crest LLP',
   },
   description:
-    'Seridian Crest LLP delivers end-to-end maritime logistics, freight forwarding, and port operations management across global trade lanes.',
-  keywords: ['maritime logistics', 'freight forwarding', 'shipping', 'port operations', 'cargo'],
+    'Seridian Crest LLP delivers dependable export services, freight forwarding, customs clearance, and cargo management connecting businesses to global trade routes.',
+  keywords: ['export services', 'freight forwarding', 'shipping', 'customs clearance', 'cargo management'],
   openGraph: {
     type: 'website',
     locale: 'en_IN',

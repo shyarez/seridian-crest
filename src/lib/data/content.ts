@@ -14,20 +14,20 @@ export async function getGlobalContent(): Promise<IContent> {
   } catch {
 
     return {
-      heroTitle: 'Global Maritime Logistics Made Reliable',
+      heroTitle: 'Your Trusted Partner in Global Trade',
       heroSubtitle:
-        'Seridian Crest LLP delivers dependable shipping, freight forwarding, customs clearance, and cargo management solutions that connect businesses to global trade routes with confidence.',
+        'Seridian Crest LLP delivers reliable shipping, freight forwarding, customs clearance, and cargo solutions that keep your business connected to global markets.',
       aboutContent:
-        'Seridian Crest LLP is a maritime logistics and shipping solutions company committed to simplifying global trade through dependable logistics coordination and operational excellence.',
+        'Seridian Crest LLP helps businesses move goods across international markets through reliable shipping and logistics solutions. We combine industry expertise with dependable service to simplify global trade.',
       mission:
-        'To deliver world-class maritime logistics services that empower businesses to compete globally — with speed, reliability, and full regulatory compliance at every port.',
+        'To deliver reliable shipping and logistics solutions that help businesses trade globally with confidence.',
       vision:
-        "To be India's most trusted maritime logistics partner, known for precision, innovation, and an unwavering commitment to our clients' success across every ocean.",
+        'To become a trusted partner for businesses seeking dependable international shipping and trade solutions.',
       ctaText:
-        'Partner with Seridian Crest LLP for dependable maritime logistics and supply chain support.',
+        'Connect with Seridian Crest LLP for reliable shipping and global trade solutions.',
       phone: '+91 12345 67890',
       email: 'info@seridian-crest.com',
-      address: '12th Floor, Maritime Tower, Mumbai – 400 001, India',
+      address: '12th Floor, Maritime Tower, Mumbai 400 001, India',
     };
   }
 }
