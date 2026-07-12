@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import AnimatedSection from '@/components/site/AnimatedSection';
-import { Target, Eye, Shield, Clock, Search, HeartHandshake, CheckCircle } from 'lucide-react';
+import { Target, Eye, Shield, Clock, Search, HeartHandshake, CheckCircle, FileDown, Award, BookOpen, ShieldCheck, FileCheck2, BadgeCheck } from 'lucide-react';
 import { getGlobalContent } from '@/lib/data/content';
 import Link from 'next/link';
 
@@ -100,6 +100,118 @@ export default async function AboutPage() {
                     <h3 className="font-bold text-brand-primary text-xl">{title}</h3>
                   </div>
                   <p className="text-brand-text-secondary leading-relaxed">{body}</p>
+                </div>
+              </AnimatedSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Download Company Brochure */}
+      <section className="section-padding bg-brand-bg" aria-label="Download company brochure">
+        <div className="container-site max-w-5xl mx-auto">
+          <AnimatedSection direction="up">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-brand-primary mb-4">Company Brochure</h2>
+              <p className="text-brand-text-secondary text-lg">Get a comprehensive overview of our services, capabilities, and global network in one document.</p>
+            </div>
+          </AnimatedSection>
+          <AnimatedSection direction="up" delay={0.1}>
+            <div className="bg-white rounded-3xl border border-brand-border shadow-sm overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2">
+                {/* Left info panel */}
+                <div className="p-10 flex flex-col justify-center">
+                  <div className="w-14 h-14 rounded-2xl bg-brand-alt-bg flex items-center justify-center mb-6">
+                    <BookOpen className="w-7 h-7 text-brand-primary" />
+                  </div>
+                  <h3 className="text-2xl font-extrabold text-brand-primary mb-3">Seridian Crest — Company Profile</h3>
+                  <p className="text-brand-text-secondary leading-relaxed mb-6">
+                    Discover our end-to-end export logistics solutions, fleet capabilities, compliance framework, and partnership model — all in a single, easy-to-share brochure.
+                  </p>
+                  <ul className="space-y-2 mb-8">
+                    {[
+                      'Service portfolio & specialisations',
+                      'Global shipping routes & partners',
+                      'Compliance & documentation standards',
+                      'Client onboarding process',
+                    ].map((item) => (
+                      <li key={item} className="flex items-center gap-2 text-brand-text-secondary text-sm">
+                        <CheckCircle className="w-4 h-4 text-brand-primary shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="/downloads/seridian-crest-brochure.pdf"
+                    download
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-brand-primary text-white font-bold hover:opacity-90 transition-all shadow-lg hover:-translate-y-0.5 w-fit"
+                  >
+                    <FileDown className="w-5 h-5" />
+                    Download Brochure
+                  </a>
+                </div>
+                {/* Right decorative panel */}
+                <div className="bg-brand-primary p-10 flex flex-col items-center justify-center gap-6 min-h-[260px]">
+                  <div className="w-24 h-24 rounded-3xl bg-white/10 flex items-center justify-center">
+                    <FileDown className="w-12 h-12 text-white" />
+                  </div>
+                  <p className="text-white/70 text-sm text-center max-w-[200px]">PDF format · Updated 2025 · Free to download</p>
+                </div>
+              </div>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* Download Certificates */}
+      <section className="section-padding bg-white" aria-label="Download certificates">
+        <div className="container-site">
+          <AnimatedSection direction="up">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-brand-primary mb-4">Our Certifications</h2>
+              <p className="text-brand-text-secondary text-lg">We are fully accredited and certified to the highest industry standards. Download our official certificates below.</p>
+            </div>
+          </AnimatedSection>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                icon: ShieldCheck,
+                title: 'ISO 9001:2015',
+                subtitle: 'Quality Management System',
+                description: 'Certified to the international standard for quality management, ensuring consistent, high-quality service delivery.',
+                file: '/downloads/certificates/iso-9001.pdf',
+              },
+              {
+                icon: FileCheck2,
+                title: 'IEC Certification',
+                subtitle: 'Importer Exporter Code',
+                description: 'Officially registered under the Directorate General of Foreign Trade, enabling lawful import-export operations.',
+                file: '/downloads/certificates/iec-certificate.pdf',
+              },
+              {
+                icon: BadgeCheck,
+                title: 'MSME Registration',
+                subtitle: 'Udyam Certificate',
+                description: 'Recognised by the Ministry of MSME under Udyam Registration, reflecting our commitment to Indian enterprise.',
+                file: '/downloads/certificates/msme-udyam.pdf',
+              },
+            ].map(({ icon: Icon, title, subtitle, description, file }, i) => (
+              <AnimatedSection key={title} delay={i * 0.1} direction="up">
+                <div className="bg-brand-bg rounded-2xl border border-brand-border p-8 flex flex-col h-full hover:shadow-lg transition-shadow">
+                  <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm mb-5">
+                    <Icon className="w-6 h-6 text-brand-primary" />
+                  </div>
+                  <h3 className="text-lg font-extrabold text-brand-primary mb-1">{title}</h3>
+                  <p className="text-sm font-medium text-brand-text-secondary mb-3">{subtitle}</p>
+                  <p className="text-brand-text-secondary text-sm leading-relaxed mb-6 flex-1">{description}</p>
+                  <a
+                    href={file}
+                    download
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border border-brand-border text-brand-primary font-semibold text-sm hover:bg-brand-alt-bg transition-all w-fit"
+                  >
+                    <Award className="w-4 h-4" />
+                    Download Certificate
+                  </a>
                 </div>
               </AnimatedSection>
             ))}
