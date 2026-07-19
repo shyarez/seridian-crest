@@ -13,10 +13,13 @@ export interface IContent {
   _id?: string;
   heroTitle: string;
   heroSubtitle: string;
+  heroImageUrl?: string;
   aboutContent: string;
+  aboutImageUrl?: string;
   mission: string;
   vision: string;
   ctaText: string;
+  ctaBannerImageUrl?: string;
   phone: string;
   email: string;
   address: string;
