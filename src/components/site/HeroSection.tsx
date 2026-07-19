@@ -7,11 +7,24 @@ import { motion } from 'framer-motion';
 interface HeroSectionProps {
   title: string;
   subtitle: string;
+  heroImageUrl?: string;
 }
 
-export default function HeroSection({ title, subtitle }: HeroSectionProps) {
+export default function HeroSection({ title, subtitle, heroImageUrl }: HeroSectionProps) {
   return (
     <section className="relative min-h-[90vh] hero-gradient flex items-center overflow-hidden" aria-label="Hero">
+      {/* Optional Cloudinary background image */}
+      {heroImageUrl && (
+        <Image
+          src={heroImageUrl}
+          alt="Hero background"
+          fill
+          priority
+          className="object-cover opacity-20"
+          sizes="100vw"
+        />
+      )}
+
       {/* Premium maritime background pattern */}
       <div
         className="absolute inset-0 opacity-[0.03]"
