@@ -22,10 +22,13 @@ export const ServiceSchema = z.object({
 export const ContentSchema = z.object({
   heroTitle: z.string().optional(),
   heroSubtitle: z.string().optional(),
+  heroImageUrl: z.string().optional(),
   aboutContent: z.string().optional(),
+  aboutImageUrl: z.string().optional(),
   mission: z.string().optional(),
   vision: z.string().optional(),
   ctaText: z.string().optional(),
+  ctaBannerImageUrl: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().optional(),
   address: z.string().optional(),
