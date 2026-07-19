@@ -12,7 +12,7 @@ export default async function AdminContentPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-brand-primary">Content Management</h1>
         <p className="text-brand-text-secondary mt-2 text-lg">
-          Update the global text, mission, vision, and contact details used across the website.
+          Update website images, text, mission, vision, and contact details — all reflected instantly across the site.
         </p>
       </div>
 
