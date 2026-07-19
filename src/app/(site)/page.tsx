@@ -3,6 +3,7 @@ import { IService } from '@/types';
 import HeroSection from '@/components/site/HeroSection';
 import AnimatedSection from '@/components/site/AnimatedSection';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Globe, ShieldCheck, Clock, Users, Building, Package, CheckCircle2, Ship, Anchor } from 'lucide-react';
 import { getGlobalContent } from '@/lib/data/content';
 import { headers } from 'next/headers';
@@ -56,7 +57,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSection title={content.heroTitle} subtitle={content.heroSubtitle} />
+      <HeroSection title={content.heroTitle} subtitle={content.heroSubtitle} heroImageUrl={content.heroImageUrl} />
 
       {/* Trust Section */}
       <section className="section-padding bg-white relative -mt-16 z-20" aria-label="Trust section">
@@ -85,8 +86,19 @@ export default async function HomePage() {
               <div className="rounded-3xl bg-brand-alt-bg p-8 md:p-12 border border-brand-border relative overflow-hidden h-[500px]">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#0E3A5B_1px,transparent_1px)] [background-size:20px_20px]" />
                 <div className="absolute bottom-0 right-0 w-64 h-64 bg-brand-accent/20 blur-3xl rounded-full" />
+                {content.aboutImageUrl ? (
+                  <Image
+                    src={content.aboutImageUrl}
+                    alt="About Seridian Crest"
+                    fill
+                    className="object-cover rounded-3xl opacity-80"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                ) : null}
                 <div className="relative z-10 flex flex-col justify-center h-full">
-                  <Anchor className="w-20 h-20 text-brand-primary mb-8 opacity-20" />
+                  {!content.aboutImageUrl && (
+                    <Anchor className="w-20 h-20 text-brand-primary mb-8 opacity-20" />
+                  )}
                   <h2 className="text-3xl md:text-4xl font-extrabold text-brand-primary mb-6">About Seridian Crest LLP</h2>
                   <p className="text-brand-text-secondary text-lg leading-relaxed mb-8">
                     {content.aboutContent}
