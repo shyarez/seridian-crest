@@ -8,6 +8,8 @@ export interface IServiceDocument extends Document {
   benefits: string[];
   order: number;
   isActive: boolean;
+  imageUrl?: string;
+  imagePublicId?: string;
 }
 
 const ServiceSchema = new Schema<IServiceDocument>(
@@ -19,6 +21,8 @@ const ServiceSchema = new Schema<IServiceDocument>(
     benefits: [{ type: String }],
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    imageUrl: { type: String, default: '' },
+    imagePublicId: { type: String, default: '' },
   },
   { timestamps: true }
 );

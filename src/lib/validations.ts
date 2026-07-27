@@ -17,6 +17,8 @@ export const ServiceSchema = z.object({
   benefits: z.array(z.string()).optional(),
   order: z.number().optional(),
   isActive: z.boolean().optional(),
+  imageUrl: z.string().optional(),
+  imagePublicId: z.string().optional(),
 });
 
 export const ContentSchema = z.object({
