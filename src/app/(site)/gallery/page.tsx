@@ -15,7 +15,7 @@ interface GalleryItem {
 }
 
 // ─── Replace the `src` values below with your own image URLs ──────────────────
-const GALLERY_ITEMS = [
+const GALLERY_ITEMS: GalleryItem[] = [
   {
     id: 1,
     src: 'https://images.unsplash.com/photo-1655523539874-e6c9aa4b5edd?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -107,6 +107,7 @@ const GALLERY_ITEMS = [
   {
     id: 12,
     src: 'https://images.unsplash.com/photo-1671190365057-b9a8f79d306f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    alt: 'Global shipping network map',
     caption: 'Global Network',
     category: 'Compliance',
     span: '',
