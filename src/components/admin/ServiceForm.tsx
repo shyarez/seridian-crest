@@ -1,13 +1,156 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import Image from 'next/image';
 import { IService } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Loader2, Save, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, Upload, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+
+// ─── Image Upload Widget ────────────────────────────────────────────────────
+
+function ServiceImageUpload({
+  currentUrl,
+  currentPublicId,
+  onUploaded,
+}: {
+  currentUrl: string;
+  currentPublicId: string;
+  onUploaded: (url: string, publicId: string) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(currentUrl);
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'seridian-crest/services');
+      if (currentPublicId) formData.append('oldPublicId', currentPublicId);
+
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error ?? 'Upload failed.');
+        setPreviewUrl(currentUrl);
+        return;
+      }
+
+      onUploaded(data.url, data.publicId);
+      toast.success('Service image uploaded successfully.');
+    } catch {
+      toast.error('Upload failed. Please try again.');
+      setPreviewUrl(currentUrl);
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = '';
+    }
+  }
+
+  function handleRemove() {
+    setPreviewUrl('');
+    onUploaded('', '');
+  }
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <p className="text-sm font-bold text-brand-primary">Service Image</p>
+        <p className="text-xs text-brand-text-secondary mt-0.5">
+          Optional image displayed on the services page. Recommended: 800×500px (JPEG, PNG, WebP · max 5 MB).
+        </p>
+      </div>
+
+      <div className="relative w-full h-52 rounded-2xl border-2 border-dashed border-brand-border bg-brand-bg overflow-hidden group">
+        {previewUrl ? (
+          <>
+            <Image
+              src={previewUrl}
+              alt="Service image preview"
+              fill
+              className="object-cover"
+              unoptimized={previewUrl.startsWith('blob:')}
+            />
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-brand-primary/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                disabled={uploading}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-brand-primary text-xs font-bold hover:bg-brand-bg transition-colors disabled:opacity-60"
+              >
+                {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                Replace
+              </button>
+              <button
+                type="button"
+                onClick={handleRemove}
+                disabled={uploading}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 text-white text-xs font-bold hover:bg-red-600 transition-colors disabled:opacity-60"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Remove
+              </button>
+            </div>
+            {/* Upload spinner overlay when replacing */}
+            {uploading && (
+              <div className="absolute inset-0 bg-brand-primary/40 flex items-center justify-center">
+                <div className="bg-white rounded-xl px-4 py-2 flex items-center gap-2 shadow-lg">
+                  <Loader2 className="w-4 h-4 animate-spin text-brand-accent" />
+                  <span className="text-sm font-bold text-brand-primary">Uploading…</span>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-brand-text-secondary hover:text-brand-primary hover:bg-brand-primary/5 transition-colors disabled:opacity-60"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="w-8 h-8 animate-spin text-brand-accent" />
+                <span className="text-sm font-medium">Uploading…</span>
+              </>
+            ) : (
+              <>
+                <div className="w-12 h-12 rounded-xl bg-white border border-brand-border flex items-center justify-center shadow-sm">
+                  <ImageIcon className="w-6 h-6" />
+                </div>
+                <span className="text-sm font-medium">Click to upload image</span>
+                <span className="text-xs text-brand-text-secondary/60">JPEG, PNG, WebP · max 5 MB</span>
+              </>
+            )}
+          </button>
+        )}
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+    </div>
+  );
+}
+
+// ─── Main Form ────────────────────────────────────────────────────────────────
 
 export default function ServiceForm({ initialData }: { initialData?: IService }) {
   const router = useRouter();
@@ -22,6 +165,13 @@ export default function ServiceForm({ initialData }: { initialData?: IService })
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl ?? '');
+  const [imagePublicId, setImagePublicId] = useState(initialData?.imagePublicId ?? '');
+
+  function handleImageUploaded(url: string, publicId: string) {
+    setImageUrl(url);
+    setImagePublicId(publicId);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,6 +187,8 @@ export default function ServiceForm({ initialData }: { initialData?: IService })
       isActive: (form.elements.namedItem('isActive') as HTMLInputElement).checked,
       features: features.filter(Boolean),
       benefits: benefits.filter(Boolean),
+      imageUrl: imageUrl || undefined,
+      imagePublicId: imagePublicId || undefined,
     };
 
     const url = isEditing ? `/api/services/${initialData._id}` : '/api/services';
@@ -102,7 +254,7 @@ export default function ServiceForm({ initialData }: { initialData?: IService })
           <Textarea id="description" name="description" defaultValue={initialData?.description} rows={4} className="text-base" required />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="space-y-2">
             <Label htmlFor="order">Display Order</Label>
             <Input id="order" name="order" type="number" defaultValue={initialData?.order ?? 0} className="text-base" />
@@ -118,6 +270,13 @@ export default function ServiceForm({ initialData }: { initialData?: IService })
             <Label htmlFor="isActive" className="text-base cursor-pointer">Active (Visible on website)</Label>
           </div>
         </div>
+
+        {/* Image upload */}
+        <ServiceImageUpload
+          currentUrl={imageUrl}
+          currentPublicId={imagePublicId}
+          onUploaded={handleImageUploaded}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
