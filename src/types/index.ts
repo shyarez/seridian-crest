@@ -7,6 +7,8 @@ export interface IService {
   benefits?: string[];
   order?: number;
   isActive?: boolean;
+  imageUrl?: string;
+  imagePublicId?: string;
 }
 
 export interface IContent {
