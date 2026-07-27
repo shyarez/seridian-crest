@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { IService } from '@/types';
 import AnimatedSection from '@/components/site/AnimatedSection';
-import { CheckCircle2, Ship } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
@@ -53,53 +54,67 @@ export default async function ServicesPage() {
       {/* Services List */}
       <section className="section-padding bg-brand-bg" aria-label="Services list">
         <div className="container-site max-w-5xl mx-auto">
-          {services.map((service, index) => (
+          {services.map((service) => (
             <AnimatedSection key={service._id} direction="up" delay={0.1}>
-              <div className="bg-white rounded-3xl p-8 md:p-12 border border-brand-border shadow-sm mb-12 overflow-hidden relative group hover:shadow-xl transition-shadow">
-                
-                <div className="flex flex-col md:flex-row gap-12 items-start relative z-10">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-2xl bg-brand-primary flex items-center justify-center shadow-lg">
-                        <Ship className="w-8 h-8 text-white" />
-                      </div>
-                      <h2 className="text-3xl font-extrabold text-brand-primary">{service.title}</h2>
-                    </div>
-                    
-                    <div className="mb-8">
-                      <h3 className="text-sm font-bold uppercase tracking-widest text-brand-accent mb-3">Overview</h3>
-                      <p className="text-brand-text-secondary text-lg leading-relaxed">
-                        {service.description}
-                      </p>
-                    </div>
+              <div className="bg-white rounded-3xl border border-brand-border shadow-sm mb-12 overflow-hidden relative group hover:shadow-xl transition-shadow">
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                      {service.features && service.features.length > 0 && (
-                        <div>
-                          <h3 className="text-sm font-bold uppercase tracking-widest text-brand-accent mb-4">Key Features</h3>
-                          <ul className="space-y-3">
-                            {service.features.map(f => (
-                              <li key={f} className="flex items-start gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-brand-primary shrink-0" />
-                                <span className="text-brand-text-primary text-sm font-medium">{f}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {service.benefits && service.benefits.length > 0 && (
-                        <div>
-                          <h3 className="text-sm font-bold uppercase tracking-widest text-brand-accent mb-4">Benefits</h3>
-                          <ul className="space-y-3">
-                            {service.benefits.map(b => (
-                              <li key={b} className="flex items-start gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-brand-accent shrink-0" />
-                                <span className="text-brand-text-secondary text-sm">{b}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                {/* Service image — shown when available */}
+                {service.imageUrl && (
+                  <div className="relative w-full h-56 md:h-72 overflow-hidden">
+                    <Image
+                      src={service.imageUrl}
+                      alt={service.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 896px"
+                    />
+                    {/* Subtle gradient overlay at the bottom */}
+                    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent" />
+                  </div>
+                )}
+
+                <div className="p-8 md:p-12 relative z-10">
+                  <div className="flex flex-col md:flex-row gap-12 items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-4 mb-6">
+                        <h2 className="text-3xl font-extrabold text-brand-primary">{service.title}</h2>
+                      </div>
+
+                      <div className="mb-8">
+                        <h3 className="text-sm font-bold uppercase tracking-widest text-brand-accent mb-3">Overview</h3>
+                        <p className="text-brand-text-secondary text-lg leading-relaxed">
+                          {service.description}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        {service.features && service.features.length > 0 && (
+                          <div>
+                            <h3 className="text-sm font-bold uppercase tracking-widest text-brand-accent mb-4">Key Features</h3>
+                            <ul className="space-y-3">
+                              {service.features.map(f => (
+                                <li key={f} className="flex items-start gap-3">
+                                  <CheckCircle2 className="w-5 h-5 text-brand-primary shrink-0" />
+                                  <span className="text-brand-text-primary text-sm font-medium">{f}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {service.benefits && service.benefits.length > 0 && (
+                          <div>
+                            <h3 className="text-sm font-bold uppercase tracking-widest text-brand-accent mb-4">Benefits</h3>
+                            <ul className="space-y-3">
+                              {service.benefits.map(b => (
+                                <li key={b} className="flex items-start gap-3">
+                                  <CheckCircle2 className="w-5 h-5 text-brand-accent shrink-0" />
+                                  <span className="text-brand-text-secondary text-sm">{b}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
