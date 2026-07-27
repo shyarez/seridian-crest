@@ -5,13 +5,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
-  Anchor, LayoutDashboard, FileText, Layers, Inbox, LogOut, ChevronLeft,
+  Anchor, LayoutDashboard, FileText, Layers, Inbox, LogOut, ChevronLeft, Images,
 } from 'lucide-react';
 
 const NAV = [
   { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin/content', icon: FileText, label: 'Content' },
   { href: '/admin/services', icon: Layers, label: 'Services' },
+  { href: '/admin/gallery', icon: Images, label: 'Gallery' },
   { href: '/admin/leads', icon: Inbox, label: 'Leads' },
 ];
 
