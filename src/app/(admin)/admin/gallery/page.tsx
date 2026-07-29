@@ -340,7 +340,7 @@ export default function AdminGalleryPage() {
         <div>
           {/* Filter tabs */}
           {images.length > 0 && (
-            <div className="flex items-center gap-2 mb-6 flex-wrap">
+            <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
               {allCategories.map(cat => (
                 <button key={cat} onClick={() => setFilter(cat)}
                   className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${filter === cat ? 'bg-brand-primary text-white' : 'bg-white border border-brand-border text-brand-text-secondary hover:border-brand-accent/50'}`}
