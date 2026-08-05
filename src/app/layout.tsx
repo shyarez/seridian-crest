@@ -9,11 +9,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://seridian-crest.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://seridiancrest.com'),
   title: {
     default: 'Seridian Crest LLP | Export Services and Freight Forwarding',
     template: '%s | Seridian Crest LLP',
   },
+
   description:
     'Seridian Crest LLP delivers dependable export services, freight forwarding, customs clearance, and cargo management connecting businesses to global trade routes.',
   keywords: ['export services', 'freight forwarding', 'shipping', 'customs clearance', 'cargo management'],
@@ -30,6 +31,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
+      <head>
+        {/* Upgrade all http:// sub-resource requests to https:// — client-side CSP fallback */}
+        <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+        {/* Prevent the browser from caching a stale parking page */}
+        <meta httpEquiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
         {children}
       </body>
