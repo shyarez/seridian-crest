@@ -192,7 +192,7 @@ export default function GalleryPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-white/40 text-lg leading-relaxed"
+            className="text-white/80 text-lg leading-relaxed"
           >
             A visual journey through our port operations, freight logistics, and
             global trade network.
