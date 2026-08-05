@@ -1,0 +1,76 @@
+# ============================================================
+# .htaccess — seridiancrest.com
+# Overrides ResellerClub/Newfold host-injected parking pages
+# and blocks mixed-content script injection from directfwd.com
+# ============================================================
+
+Options -Indexes
+
+# ------------------------------------------------------------
+# Custom Error Documents
+# Override host provider's 403/404 parking pages
+# ------------------------------------------------------------
+ErrorDocument 403 /403.html
+ErrorDocument 404 /404.html
+
+# ------------------------------------------------------------
+# Force HTTPS — redirect all HTTP traffic to HTTPS
+# ------------------------------------------------------------
+RewriteEngine On
+
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ------------------------------------------------------------
+# Block directfwd.com script injection (ResellerClub/Newfold)
+# Deny requests that originate from or reference directfwd.com
+# ------------------------------------------------------------
+RewriteCond %{HTTP_REFERER} directfwd\.com [NC]
+RewriteRule .* - [F,L]
+
+RewriteCond %{QUERY_STRING} directfwd\.com [NC]
+RewriteRule .* - [F,L]
+
+# ------------------------------------------------------------
+# Security Headers
+# Prevent mixed content, clickjacking, and sniffing
+# ------------------------------------------------------------
+<IfModule mod_headers.c>
+  # Block mixed content entirely — only allow HTTPS resources
+  Header always set Content-Security-Policy "upgrade-insecure-requests"
+
+  # Prevent the browser from MIME-sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Prevent clickjacking
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # Enable XSS filter in older browsers
+  Header always set X-XSS-Protection "1; mode=block"
+
+  # Tell browsers to always use HTTPS for 1 year
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+  # Control referrer information
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Remove server signature
+  Header always unset Server
+  Header always unset X-Powered-By
+</IfModule>
+
+# ------------------------------------------------------------
+# Block common host-injected files and parking scripts
+# ------------------------------------------------------------
+<FilesMatch "(sk-jspark_init\.php|jsinit|directfwd|parking)">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# ------------------------------------------------------------
+# Next.js — Route all requests through the app
+# (Required if running Next.js via Node.js adapter on cPanel)
+# ------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L]
