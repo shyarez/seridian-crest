@@ -9,6 +9,7 @@ import {
   Building2,
   CheckCircle,
   Star,
+  ExternalLink,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ const APPROVALS = [
     iconColor: "text-blue-700",
     iconBg: "bg-blue-100",
     badgeColor: "bg-blue-100 text-blue-700",
+    certificate: "/Seridian Crest LLP Doc_20260807-1-5.pdf",
   },
   {
     icon: Building2,
@@ -43,6 +45,7 @@ const APPROVALS = [
     iconColor: "text-emerald-700",
     iconBg: "bg-emerald-100",
     badgeColor: "bg-emerald-100 text-emerald-700",
+    certificate: "/Seridian Crest LLP Doc_20260807-6-8.pdf",
   },
   {
     icon: FileCheck2,
@@ -56,6 +59,7 @@ const APPROVALS = [
     iconColor: "text-violet-700",
     iconBg: "bg-violet-100",
     badgeColor: "bg-violet-100 text-violet-700",
+    certificate: "/Seridian Crest LLP Doc_20260807-9.pdf",
   },
   {
     icon: Globe,
@@ -69,6 +73,7 @@ const APPROVALS = [
     iconColor: "text-amber-700",
     iconBg: "bg-amber-100",
     badgeColor: "bg-amber-100 text-amber-700",
+    certificate: "/Seridian Crest LLP Doc_20260807-10.pdf",
   },
   {
     icon: Award,
@@ -82,6 +87,7 @@ const APPROVALS = [
     iconColor: "text-rose-700",
     iconBg: "bg-rose-100",
     badgeColor: "bg-rose-100 text-rose-700",
+    certificate: "/Seridian Crest LLP Doc_20260807-11.pdf",
   },
   {
     icon: BadgeCheck,
@@ -95,6 +101,7 @@ const APPROVALS = [
     iconColor: "text-sky-700",
     iconBg: "bg-sky-100",
     badgeColor: "bg-sky-100 text-sky-700",
+    certificate: "/Seridian Crest LLP Doc_20260807-1-5.pdf",
   },
 ];
 
@@ -131,7 +138,7 @@ export default function AffiliationsPage() {
               Affiliations &amp; Approvals
             </h1>
             <p className="text-white/80 text-xl font-medium">
-              Backed by government bodies and trade institutions — our
+              Backed by government bodies and trade institutions our
               accreditations reflect our commitment to compliance, transparency,
               and trusted global trade.
             </p>
@@ -194,8 +201,9 @@ export default function AffiliationsPage() {
                   iconColor,
                   iconBg,
                   badgeColor,
+                  certificate,
                 },
-                i
+                i,
               ) => (
                 <AnimatedSection key={agency} delay={i * 0.08} direction="up">
                   <div
@@ -228,9 +236,21 @@ export default function AffiliationsPage() {
                     <p className="text-brand-text-secondary text-sm leading-relaxed flex-1">
                       {description}
                     </p>
+                    {/* Certificate link */}
+                    {certificate && (
+                      <a
+                        href={certificate}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`mt-5 inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg border transition-all hover:opacity-80 self-start ${iconColor} ${iconBg} border-current/20`}
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        View Certificate
+                      </a>
+                    )}
                   </div>
                 </AnimatedSection>
-              )
+              ),
             )}
           </div>
         </div>
