@@ -273,7 +273,7 @@ export default function AffiliationsPage() {
                 </span>
               </div>
               <h2 className="text-3xl font-extrabold text-brand-primary mb-4 leading-tight">
-                Compliance is Not an Option — It&apos;s Our Foundation
+                Compliance is Not an Option It&apos;s Our Foundation
               </h2>
               <p className="text-brand-text-secondary leading-relaxed">
                 Every affiliation we hold is maintained with active renewal,
