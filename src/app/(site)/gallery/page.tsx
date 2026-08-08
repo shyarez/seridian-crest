@@ -203,7 +203,7 @@ export default function GalleryPage() {
       {/* ── Filter Tabs ───────────────────────────────────────────────────────── */}
       <section className="bg-white sticky top-16 z-30 border-b border-brand-border shadow-sm">
         <div className="container-site overflow-x-auto">
-          <div className="flex items-center justify-center gap-4 py-5 min-w-max mx-auto">
+          <div className="flex items-center justify-between gap-1 py-5 min-w-max mx-auto">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
